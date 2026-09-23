@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strings in C — A Beginner's Personal Guide</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ======================= COVER ======================= -->
+  <header class="cover">
+    <p class="cover__eyebrow">LAB NOTEBOOK · C PROGRAMMING</p>
+    <h1 class="cover__title">Strings in C</h1>
+    <p class="cover__subtitle">A beginner's personal guide — from "wait, no ampersand?" to actually getting it.</p>
+    <div class="cover__byline">
+      <span class="cover__avatar">A</span>
+      <span><strong>Akriti Singh</strong> · 1st Semester BCA student</span>
+    </div>
+  </header>
+
+  <!-- ======================= AUTHOR'S NOTE ======================= -->
+  <div class="note-card">
+    <span class="note-card__label">AUTHOR'S NOTE</span>
+    <p>I'm sharing my actual learning notes from the past lab sessions. When I started C, storing numbers was pretty basic and simple, but strings were very different — genuinely difficult to wrap my head around at first. Here's what I learned, in the order it finally clicked.</p>
+  </div>
+
+  <!-- ======================= 1. INTRODUCTION ======================= -->
+  <section id="intro">
+    <p class="section__number">01</p>
+    <h2>From numbers to words</h2>
+    <p class="lede">In the initial lectures of C programming, everything was about integers and floats — calculating average marks, checking passing grades with conditional statements. Then my professor introduced strings and their functions. That's when I realized: there's more to it.</p>
+    <p class="pull">A string is essentially a sequence of characters — letters, symbols, or numbers — treated as a single unit of text. Words like "AKRITI" or "BENGALURU" are strings. But behind the scenes, C stores them using an array of type <code class="inline-code">char</code>.</p>
+  </section>
+
+  <!-- ======================= 2. WHAT IS A STRING ======================= -->
+  <section id="what-is">
+    <p class="section__number">02</p>
+    <h2>What is a string in C, really?</h2>
+    <p>A string in C is just a character array, where each character sits in its own slot and the array is terminated by a special marker. For instance, when we declare:</p>
+
+    <div class="code-window">
+      <div class="code-window__tab"><i></i>notes.c</div>
+      <pre><code><span class="kw">char</span> arr[] = <span class="str">"Akriti"</span>;</code></pre>
+    </div>
+
+    <p>Here's how C actually stores it inside the computer's memory cells:</p>
+
+    <div class="memory">
+      <div class="memory__row">
+        <div class="memory__cell"><div class="memory__char">A</div><div class="memory__index">[0]</div></div>
+        <div class="memory__cell"><div class="memory__char">K</div><div class="memory__index">[1]</div></div>
+        <div class="memory__cell"><div class="memory__char">R</div><div class="memory__index">[2]</div></div>
+        <div class="memory__cell"><div class="memory__char">I</div><div class="memory__index">[3]</div></div>
+        <div class="memory__cell"><div class="memory__char">T</div><div class="memory__index">[4]</div></div>
+        <div class="memory__cell"><div class="memory__char">I</div><div class="memory__index">[5]</div></div>
+        <div class="memory__cell memory__cell--null"><div class="memory__char">\0</div><div class="memory__index">[6]</div></div>
+      </div>
+    </div>
+    <p class="memory__caption">Character → array index, one memory cell at a time.</p>
+  </section>
+
+  <!-- ======================= 3. NULL CHARACTER ======================= -->
+  <section id="null-char">
+    <p class="section__number">03</p>
+    <h2>The twist: the null character (\0)</h2>
+    <p>Notice that extra slot at index <code class="inline-code">[6]</code> holding <code class="inline-code">\0</code> — the <strong>null character</strong>. This was the single most confusing thing for me when I first saw it.</p>
+    <p>Because C character arrays don't automatically keep track of their own size, C uses <code class="inline-code">\0</code> as a stop signal that tells the compiler where the string ends. Without it, your program keeps reading random garbage memory past your actual text.</p>
+
+    <div class="sticky">
+      <p class="sticky__title">Did you know?</p>
+      <p>A word with 6 letters (like "AKRITI") actually needs <strong>7</strong> memory slots in C. Always allocate 1 extra space for the hidden <code class="inline-code">\0</code> byte, or your program gives garbage output.</p>
+    </div>
+  </section>
+
+  <!-- ======================= 4. DECLARING & INITIALIZING ======================= -->
+  <section id="declaring">
+    <p class="section__number">04</p>
+    <h2>Declaring and initializing strings</h2>
+    <p>You can declare a string in two simple ways:</p>
+
+    <div class="code-window">
+      <div class="code-window__tab"><i></i>notes.c</div>
+      <pre><code><span class="kw">char</span> name[20];
+<span class="kw">char</span> name[] = <span class="str">"BCA Student"</span>;</code></pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Declaration</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code class="inline-code">char name[20];</code></td>
+            <td>Reserves space for up to 19 characters + 1 null character.</td>
+          </tr>
+          <tr>
+            <td><code class="inline-code">char name[] = "BCA Student";</code></td>
+            <td>Automatically calculates size (11 chars + 1 = 12 bytes).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ======================= 5. TAKING INPUT ======================= -->
+  <section id="input">
+    <p class="section__number">05</p>
+    <h2>Taking string input</h2>
+    <p>One common beginner trip-up: a string stored in a character array is read differently from a normal integer variable.</p>
+
+    <div class="code-window">
+      <div class="code-window__tab"><i></i>notes.c</div>
+      <pre><code><span class="fn">scanf</span>(<span class="str">"%s"</span>, firstName);</code></pre>
+    </div>
+
+    <p class="margin-note">no & here — trust me, I checked three times</p>
+
+    <p>We wrote <code class="inline-code">scanf("%s", firstName);</code> <strong>without</strong> an ampersand (<code class="inline-code">&amp;</code>). That's because an array name itself already acts as a memory address. Adding <code class="inline-code">&amp;</code> is a habit from integers that beginners often repeat here by accident.</p>
+
+    <h3>A small memory reminder</h3>
+    <p>For a beginner, the easiest way to remember strings is: characters are stored one after another, and <code class="inline-code">\0</code> marks where the string ends.</p>
+  </section>
+
+  <!-- ======================= 6. STRING.H FUNCTIONS ======================= -->
+  <section id="functions">
+    <p class="section__number">06</p>
+    <h2>Handy functions in &lt;string.h&gt;</h2>
+    <p>Instead of manually counting characters with loops, C gives us standard built-in functions inside the <code class="inline-code">#include &lt;string.h&gt;</code> header:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Function</th><th>Syntax</th><th>Purpose / return value</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="fn-name">strlen()</td>
+            <td><code class="inline-code">strlen(string);</code></td>
+            <td>Finds the length of a string.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">strcpy()</td>
+            <td><code class="inline-code">strcpy(destination, source);</code></td>
+            <td>Copies the source string to destination.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">strncpy()</td>
+            <td><code class="inline-code">strncpy(destination, source, n);</code></td>
+            <td>Copies up to n characters.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">strcat()</td>
+            <td><code class="inline-code">strcat(string1, string2);</code></td>
+            <td>Joins / appends string2 to string1.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">strncat()</td>
+            <td><code class="inline-code">strncat(string1, string2, n);</code></td>
+            <td>Joins up to n characters of string2.</td>
+          </tr>
+          <tr>
+            <td class="fn-name">strcmp()</td>
+            <td><code class="inline-code">strcmp(string1, string2);</code></td>
+            <td>
+              Compares two strings.
+              <div class="mini-return">
+                <div><span class="val">0</span> Both strings are equal</div>
+                <div><span class="val">&lt; 0</span> s1 comes before s2</div>
+                <div><span class="val">&gt; 0</span> s1 comes after s2</div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="fn-name">strncmp()</td>
+            <td><code class="inline-code">strncmp(string1, string2, n);</code></td>
+            <td>Compares the first n characters.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="memory__caption">These functions save time and make code far more compact than hand-rolled loops.</p>
+  </section>
+
+  <!-- ======================= 7. REAL LIFE CONNECTION ======================= -->
+  <section id="real-life">
+    <p class="section__number">07</p>
+    <h2>Real-life connection: a student registration system</h2>
+    <p>Almost every real application — from college web portals to login forms — uses strings. A student's name, city, category and other text-based details are all data that can be stored as strings.</p>
+    <p>A simple registration-style program can use character arrays for details like a student's name and city:</p>
+
+    <div class="code-window">
+      <div class="code-window__tab"><i></i>register.c</div>
+      <pre><code><span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="kw">char</span> studentName[30], city[20];
+}</code></pre>
+    </div>
+
+    <h3>Why strings matter in C</h3>
+    <p>Numbers let programs calculate. Strings let our C code actually interact and talk with human users. That's why understanding character arrays is worth the initial confusion.</p>
+  </section>
+
+  <!-- ======================= 8. TOP MISTAKES ======================= -->
+  <section id="mistakes">
+    <p class="section__number">08</p>
+    <h2>Top 3 mistakes I used to make</h2>
+    <p>These are the mistakes I personally keep in mind while writing a string program in an exam:</p>
+
+    <div class="table-wrap">
+      <table class="mistakes">
+        <thead>
+          <tr><th>Mistake</th><th>What happens</th><th>What to remember</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Comparing strings using <code class="inline-code">==</code></td>
+            <td><code class="inline-code">if(str1 == str2)</code> compares memory addresses, not words.</td>
+            <td>Use strcmp()</td>
+          </tr>
+          <tr>
+            <td>Missing header</td>
+            <td>Forgetting <code class="inline-code">#include &lt;string.h&gt;</code> when using strlen() or strcpy().</td>
+            <td>Include &lt;string.h&gt;</td>
+          </tr>
+          <tr>
+            <td>Array overflow</td>
+            <td>Storing a 25-letter word inside a <code class="inline-code">char name[10]</code> variable.</td>
+            <td>Size it generously</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ======================= 9. CONCLUSION ======================= -->
+  <section id="conclusion">
+    <p class="section__number">09</p>
+    <h2>Conclusion</h2>
+    <p class="lede">Switching from numbers to strings felt like a jump at first. But understanding that a string is just a character array ending with <code class="inline-code">\0</code> made everything click for me. Numbers let programs calculate — strings let our C code actually talk to the humans using it.</p>
+  </section>
+
+  <!-- ======================= KEY TAKEAWAYS ======================= -->
+  <section id="takeaways">
+    <h2>My key takeaways</h2>
+    <ul class="checklist">
+      <li><span class="checklist__box"></span> A string in C is stored using a character array.</li>
+      <li><span class="checklist__box"></span> Every string needs a null character (\0) at the end.</li>
+      <li><span class="checklist__box"></span> The &lt;string.h&gt; header provides useful string functions.</li>
+      <li><span class="checklist__box"></span> String comparison should be done using strcmp(), not ==.</li>
+      <li><span class="checklist__box"></span> Enough array space should always be provided to avoid overflow.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Strings in C — Lab Notebook</span>
+    <span>Akriti Singh · 1st Semester BCA</span>
+  </footer>
+
+</div>
+</body>
+</html>
